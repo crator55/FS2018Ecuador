@@ -8,7 +8,6 @@ use FacturaScripts\Dinamic\Model\Provincia;
 use FacturaScripts\Dinamic\Lib\Import\CSVImport;
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\App\AppSettings;
-use FacturaScripts\Core\Base\MiniLog;
 Use FacturaScripts\Dinamic\Model\IdentificadorFiscal;
 
 
@@ -17,13 +16,7 @@ class Utils
 
     public static function ChangeDefaultTax()
     {
-        $codpais = AppSettings::get('default', 'codpais');
 
-        if ($codpais != 'ECU') {
-
-            $newminilog = new MiniLog();
-            $newminilog->alert("You must change the country from default settings", $context = []);
-        } else {
             $impuesto = new Impuesto();
             $setting_model = new AppSettings();
             $setting_model->set('default', 'codimpuesto', 'NONE');
@@ -38,17 +31,13 @@ class Utils
                 $setting_model->set('default', 'codimpuesto', 'IVA12');
                 $setting_model->save();
             }
-        }
+
 
     }
 
     public static function ChangeIdentifer()
     {
-        $codpais = AppSettings::get('default', 'codpais');
-        if ($codpais != 'ECU') {
-
-        } else {
-            $identifer = new IdentificadorFiscal();
+           $identifer = new IdentificadorFiscal();
             foreach ($identifer->all() as $value) {
                 $value->delete();
             }
@@ -60,16 +49,12 @@ class Utils
 
             $identifer->tipoidfiscal = 'Pasaporte';
             $identifer->save();
-        }
+
     }
 
     public static function ChangeState()
 
     {
-        $codpais = AppSettings::get('default', 'codpais');
-        if ($codpais != 'ECU') {
-
-        } else {
             $state = new Provincia();
             foreach ($state->all() as $value) {
                 $value->delete();
@@ -77,8 +62,6 @@ class Utils
             $database = new DataBase();
             $sql = CSVImport::importTableSQL('provincias');
             $database->exec($sql);
-        }
-
 
     }
 }
