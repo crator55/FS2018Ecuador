@@ -13,6 +13,7 @@ class Init extends InitClass
 
     public function update()
     {
-        Lib\Utils::ChangeDefaultTax();
+         Lib\Utils::ChangeState();
+         Lib\Utils::ChangeDefaultTax();
     }
 }
