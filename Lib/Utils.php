@@ -19,58 +19,65 @@ class Utils
     {
         $codpais = AppSettings::get('default', 'codpais');
 
-        if ($codpais!='ECU'){
+        if ($codpais != 'ECU') {
+
             $newminilog = new MiniLog();
-            $newminilog->alert("You must change the country from default settings");
+            $newminilog->alert("You must change the country from default settings", $context = []);
+        } else {
+            $impuesto = new Impuesto();
+            $setting_model = new AppSettings();
+            $setting_model->set('default', 'codimpuesto', 'NONE');
+
+            foreach ($impuesto->all() as $value) {
+                $value->delete();
+            }
+
+            $database = new DataBase();
+            $sql = CSVImport::importTableSQL('impuestos');
+            if ($database->exec($sql)) {
+                $setting_model->set('default', 'codimpuesto', 'IVA12');
+                $setting_model->save();
+            }
         }
-        $impuesto = new Impuesto();
-        $setting_model = new AppSettings();
-        $setting_model->set('default', 'codimpuesto', 'NONE');
-
-
-        foreach ($impuesto->all() as $value) {
-            $value->delete();
-        }
-
-        $database = new DataBase();
-        $sql = CSVImport::importTableSQL('impuestos');
-        if ($database->exec($sql)) {
-            $setting_model->set('default', 'codimpuesto', 'IVA12');
-            $setting_model->save();
-        }
-
 
     }
 
     public static function ChangeIdentifer()
     {
+        $codpais = AppSettings::get('default', 'codpais');
+        if ($codpais != 'ECU') {
 
-        $identifer = new IdentificadorFiscal();
-        foreach ($identifer->all() as $value) {
-            $value->delete();
+        } else {
+            $identifer = new IdentificadorFiscal();
+            foreach ($identifer->all() as $value) {
+                $value->delete();
+            }
+            $identifer->tipoidfiscal = 'CI';
+            $identifer->save();
+
+            $identifer->tipoidfiscal = 'RUC';
+            $identifer->save();
+
+            $identifer->tipoidfiscal = 'Pasaporte';
+            $identifer->save();
         }
-        $identifer->tipoidfiscal = 'CI';
-        $identifer->save();
-
-        $identifer->tipoidfiscal = 'RUC';
-        $identifer->save();
-
-        $identifer->tipoidfiscal = 'Pasaporte';
-        $identifer->save();
-
-
     }
 
     public static function ChangeState()
-    {
-        $state = new Provincia();
-        foreach ($state->all() as $value) {
-            $value->delete();
-        }
 
-        $database = new DataBase();
-        $sql = CSVImport::importTableSQL('provincias');
-        $database->exec($sql);
+    {
+        $codpais = AppSettings::get('default', 'codpais');
+        if ($codpais != 'ECU') {
+
+        } else {
+            $state = new Provincia();
+            foreach ($state->all() as $value) {
+                $value->delete();
+            }
+            $database = new DataBase();
+            $sql = CSVImport::importTableSQL('provincias');
+            $database->exec($sql);
+        }
 
 
     }
