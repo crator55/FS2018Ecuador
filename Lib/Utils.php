@@ -42,17 +42,14 @@ class Utils
         foreach ($identifer->all() as $value) {
             $value->delete();
         }
+        $tiposfiscal = array(
+            "CI","RUC","Pasaporte"
+        );
+        foreach ($tiposfiscal as &$valor) {
+            $identifer->tipoidfiscal=$valor;
+            $identifer->save();
+        }
 
-        $tipofiscal = new IdentificadorFiscal();
-
-        $tipofiscal->tipoidfiscal = 'CI';
-        $tipofiscal->save();
-
-        $tipofiscal->tipoidfiscal = 'RUC';
-        $tipofiscal->save();
-
-        $tipofiscal->tipoidfiscal = 'Pasaporte';
-        $tipofiscal->save();
 
     }
 
