@@ -2,34 +2,42 @@
 
 namespace FacturaScripts\Plugins\Ecuador\Lib;
 
+
 use FacturaScripts\Dinamic\Model\Impuesto;
 use FacturaScripts\Dinamic\Model\Provincia;
 use FacturaScripts\Dinamic\Lib\Import\CSVImport;
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\App\AppSettings;
+use FacturaScripts\Core\Base\MiniLog;
+Use FacturaScripts\Dinamic\Model\IdentificadorFiscal;
+
 
 class Utils
 {
 
-
     public static function ChangeDefaultTax()
     {
+        $codpais = AppSettings::get('default', 'codpais');
 
+        if ($codpais!='ECU'){
+            $newminilog = new MiniLog();
+            $newminilog->alert("You must change the country from default settings");
+        }
         $impuesto = new Impuesto();
         $setting_model = new AppSettings();
-        $setting_model->set('default','codimpuesto','NONE');
+        $setting_model->set('default', 'codimpuesto', 'NONE');
 
 
-            foreach ($impuesto->all() as $value) {
-                $value->delete();
-            }
+        foreach ($impuesto->all() as $value) {
+            $value->delete();
+        }
 
-            $database = new DataBase();
-            $sql = CSVImport::importTableSQL('impuestos');
-            if($database->exec($sql)){
-                $setting_model->set('default','codimpuesto','IVA12');
-                $setting_model->save();
-            }
+        $database = new DataBase();
+        $sql = CSVImport::importTableSQL('impuestos');
+        if ($database->exec($sql)) {
+            $setting_model->set('default', 'codimpuesto', 'IVA12');
+            $setting_model->save();
+        }
 
 
     }

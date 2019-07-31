@@ -1,4 +1,5 @@
 <?php
+
 namespace FacturaScripts\Plugins\Ecuador;
 
 use FacturaScripts\Core\Base\InitClass;
@@ -13,7 +14,8 @@ class Init extends InitClass
 
     public function update()
     {
-         Lib\Utils::ChangeState();
-         Lib\Utils::ChangeDefaultTax();
+        Lib\Utils::ChangeDefaultTax();
+        Lib\Utils::ChangeState();
+        Lib\Utils::ChangeIdentifer();
     }
 }
